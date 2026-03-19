@@ -1,2 +1,9 @@
 /credentials.json
 /.env.local
+/.env
+token.json
+*.pyc
+__pycache__/
+.pytest_cache/
+*.egg-info/
+.venv/
