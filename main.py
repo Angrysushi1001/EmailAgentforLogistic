@@ -60,8 +60,9 @@ def main() -> None:
             write_pending(email, extraction)
             print(f"  -> Low confidence. Written to pending_quotes for review.")
         else:
-            url = writer.write(extraction, email.subject)
-            print(f"  -> Written to Sheets. Client: {extraction.client_name} | Fees: {len(extraction.fees)}")
+            url, action = writer.write(extraction, email.subject)
+            label = "New entry" if action == "new" else "Updated existing entry"
+            print(f"  -> {label}. Client: {extraction.client_name} | Item: {extraction.cargo_description} | Fees: {len(extraction.fees)}")
             print(f"  -> {url}")
 
         reader.mark_processed(email.message_id)
