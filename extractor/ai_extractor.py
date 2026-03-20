@@ -17,6 +17,11 @@ SYSTEM_PROMPT = """You are a logistics quote extraction agent.
 Extract structured data from the email and return a single JSON object.
 Use null for any field you cannot find with confidence.
 
+IMPORTANT: Emails are often reply chains with the same content quoted multiple times.
+Extract fees ONLY from the most recent message at the top of the thread.
+Do not extract the same fee more than once. If a fee appears in both the latest
+message and a quoted/forwarded section, include it exactly once.
+
 JSON structure:
 {
   "confidence_score": <float 0.0-1.0>,
@@ -105,8 +110,13 @@ class AIExtractor:
 
     def _map_fees(self, raw_fees: list[dict]) -> list[ExtractedFee]:
         mapped = []
+        seen: set[str] = set()
         for fee in raw_fees:
             raw_name = fee.get("raw_name", "")
+            dedup_key = raw_name.lower().strip()
+            if dedup_key in seen:
+                continue
+            seen.add(dedup_key)
             master_name = self._lookup_master_name(raw_name)
             mapped.append(
                 ExtractedFee(
