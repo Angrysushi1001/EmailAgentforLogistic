@@ -40,11 +40,9 @@ JSON structure:
 }
 
 client_email rules:
-- Extract the email address of the company that REQUESTED the service (the buyer/client).
-- This is the person who originally asked for the quote — found in the From field of the
-  earliest message in the thread, or whoever the quote is addressed to.
-- NEVER use CC'd addresses. CC addresses are observers, not the client.
-- If the email was sent by someone at lxpantos.com, the client is lxpantos — use their email.
+- Extract the email address of the client (the company receiving the service).
+- Look in the To/Cc fields and the body of the email thread for a company contact email.
+- If multiple client emails exist, use the most prominent recipient.
 
 cargo_description rules:
 - A short description of what is being stored or handled (e.g. "2 x belts", "mineral water", "edible raw materials").
