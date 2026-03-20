@@ -6,6 +6,7 @@ Run with: python main.py
 from auth import SupabaseClient
 from extractor import AIExtractor, QuoteExtraction
 from gmail import EmailMessage, GmailReader
+from sheets import SheetsWriter
 
 
 def write_pending(email: EmailMessage, extraction: QuoteExtraction) -> None:
@@ -41,6 +42,7 @@ def write_pending(email: EmailMessage, extraction: QuoteExtraction) -> None:
 def main() -> None:
     reader = GmailReader()
     extractor = AIExtractor()
+    writer = SheetsWriter()
 
     emails = reader.fetch_unread()
     if not emails:
@@ -58,9 +60,9 @@ def main() -> None:
             write_pending(email, extraction)
             print(f"  -> Low confidence. Written to pending_quotes for review.")
         else:
-            # Section 4: Sheets writer (coming next)
-            print(f"  -> Extraction OK. Client: {extraction.client_name} | Fees: {len(extraction.fees)}")
-            print(f"  -> Sheets writer not yet implemented.")
+            url = writer.write(extraction, email.subject)
+            print(f"  -> Written to Sheets. Client: {extraction.client_name} | Fees: {len(extraction.fees)}")
+            print(f"  -> {url}")
 
         reader.mark_processed(email.message_id)
         print(f"  -> Marked as LQA/Processed.")
