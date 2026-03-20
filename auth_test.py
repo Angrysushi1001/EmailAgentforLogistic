@@ -6,14 +6,26 @@ Run with: python auth_test.py
 import sys
 
 from auth import GoogleClient, SupabaseClient
+from gmail.reader import FETCH_LABEL, GmailReader
 
 
 def check_gmail() -> None:
     print("Checking Gmail...", end=" ")
     service = GoogleClient.get_instance().gmail
     result = service.users().labels().list(userId="me").execute()
-    label_count = len(result.get("labels", []))
-    print(f"OK ({label_count} labels found)")
+    labels = result.get("labels", [])
+    label_names = [l["name"] for l in labels]
+    if FETCH_LABEL not in label_names:
+        print(f"WARNING — '{FETCH_LABEL}' label not found in Gmail. Create it and apply it to inbound quote emails.")
+    else:
+        print(f"OK ({len(labels)} labels found, '{FETCH_LABEL}' label present)")
+
+
+def check_gmail_reader() -> None:
+    print("Checking GmailReader.fetch_unread()...", end=" ")
+    reader = GmailReader()
+    messages = reader.fetch_unread()
+    print(f"OK ({len(messages)} unread message(s) in label:'{FETCH_LABEL}')")
 
 
 def check_sheets() -> None:
@@ -47,7 +59,7 @@ def check_supabase() -> None:
 
 
 def main() -> None:
-    checks = [check_gmail, check_sheets, check_drive, check_supabase]
+    checks = [check_gmail, check_gmail_reader, check_sheets, check_drive, check_supabase]
     failed = False
     for check in checks:
         try:
