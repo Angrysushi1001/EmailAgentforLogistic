@@ -26,8 +26,10 @@ JSON structure:
 {
   "confidence_score": <float 0.0-1.0>,
   "client_name": <string | null>,
+  "client_email": <string | null>,
   "carrier_name": <string | null>,
   "quote_date": <ISO 8601 date string | null>,
+  "cargo_description": <string | null>,
   "fees": [
     {
       "raw_name": <string>,
@@ -36,6 +38,16 @@ JSON structure:
     }
   ]
 }
+
+client_email rules:
+- Extract the email address of the client (the company receiving the service).
+- Look in the To/Cc fields and the body of the email thread for a company contact email.
+- If multiple client emails exist, use the most prominent recipient.
+
+cargo_description rules:
+- A short description of what is being stored or handled (e.g. "2 x belts", "mineral water", "edible raw materials").
+- Pull from the subject line or body. Keep it concise (under 10 words).
+- Use null if no cargo description is found.
 
 confidence_score rules:
 - 0.9-1.0: all fields present, no ambiguity
@@ -61,8 +73,10 @@ class ExtractedFee:
 class QuoteExtraction:
     confidence_score: float
     client_name: str | None
+    client_email: str | None
     carrier_name: str | None
     quote_date: str | None
+    cargo_description: str | None
     fees: list[ExtractedFee]
     message_id: str
     needs_review: bool
@@ -81,8 +95,10 @@ class AIExtractor:
         return QuoteExtraction(
             confidence_score=confidence,
             client_name=raw.get("client_name"),
+            client_email=raw.get("client_email"),
             carrier_name=raw.get("carrier_name"),
             quote_date=raw.get("quote_date"),
+            cargo_description=raw.get("cargo_description"),
             fees=fees,
             message_id=email.message_id,
             needs_review=confidence <= CONFIDENCE_THRESHOLD,
