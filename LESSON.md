@@ -20,7 +20,7 @@ to understand not just what the code does, but why it was written that way.
 
 ## 1. What This Project Does
 
-You (Raphael at lxpantos) receive logistics quote emails from warehouse providers
+You (Samuel) receive logistics quote emails from warehouse providers
 like GKE. These emails contain pricing information — storage fees, handling fees,
 surcharges — for a specific client's cargo.
 

@@ -15,7 +15,7 @@ This is an AI-powered logistics automation tool that extracts pricing data from 
 - Run tests: `pytest`
 
 ## USER CONTEXT
-- **User:** Raphael Yeong (`raphael.yeong@lxpantos.com`) — logistics/freight forwarder at lxpantos.
+- **User:** Samuel Lim (`samuellim200@gmail.com`) — logistics/freight forwarder at lxpantos.
 - Raphael receives quote emails FROM warehouse/logistics providers (e.g. GKE Group).
 - These quotes are FOR a client — the company that **requested** the service.
 - If Raphael himself sent the original request, the client is **lxpantos** (`lxpantos`).

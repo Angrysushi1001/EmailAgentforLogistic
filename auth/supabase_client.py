@@ -9,10 +9,12 @@ load_dotenv()
 
 class SupabaseClient:
     _instance: "Client | None" = None
+    ##ensures only one client exists by using double check method
     _lock = threading.Lock()
 
     @classmethod
     def get_instance(cls) -> Client:
+        ##double check method (singleton method)
         if cls._instance is None:
             with cls._lock:
                 if cls._instance is None:
